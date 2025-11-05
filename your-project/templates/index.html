@@ -1,10 +1,11 @@
+<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="el">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ZERO WASTE Κύπρος | Ποιοι Είμαστε</title>
-  <meta name="description" content="ZERO WASTE Κύπρος – Μη κερδοσκοπικός οργανισμός για μείωση σπατάλης τροφίμων, στήριξη ευάλωτων και βιώσιμη ανάπτυξη.">
+  <title>ZERO WASTE Κύπρος | FoodRescue Demo</title>
+  <meta name="description" content="ZERO WASTE Κύπρος – demo εφαρμογή σάρωσης τροφίμων" />
   <style>
     :root{
       --bg:#ffffff;         /* white */
@@ -166,76 +167,46 @@
     </div>
   </header>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="container wrap">
-        <div>
-          <span class="eyebrow">Στόχος 2 ΟΗΕ · Μηδενική Πείνα</span>
-          <h1>Μειώνουμε τη σπατάλη τροφίμων στην Κύπρο.<br/>Τρέφουμε τους ανθρώπους, όχι τους κάδους.</h1>
-          <p class="lead">Συνδέουμε πλεονάζον φαγητό με φορείς που στηρίζουν άπορους και ευάλωτους, ενδυναμώνουμε τις κοινότητες και εκπαιδεύουμε για μια κυκλική, βιώσιμη οικονομία σε παγκύπριο επίπεδο.</p>
-          <div class="tag-list">
-            <span class="tag">Διασώσεις τροφίμων</span>
-            <span class="tag">Διανομή σε άπορους</span>
-            <span class="tag">Εκπαίδευση</span>
-            <span class="tag">Συνεργασίες με επιχειρήσεις</span>
-          </div>
-          <div style="display:flex; gap:10px; margin-top:18px">
-            <a class="btn" href="#donate">Κάνε Δωρεά</a>
-            <a class="btn secondary" href="#learn">Μάθε Περισσότερα</a>
-          </div>
-        </div>
-        <aside class="hero-card" aria-label="Γρήγορη ενημέρωση">
-          <img src="https://i.postimg.cc/J4N369bZ/IMG-0158.jpg" alt="Διάσωση τροφίμων – εθελοντές" style="width:100%; border-radius:14px; margin-bottom:10px"/>
-          <h3 style="margin:0 0 6px">Γρήγορα Στοιχεία</h3>
-          <p style="margin:0 0 10px; color:#334155">Ενδεικτικά μετρητικά για την Κύπρο.</p>
-          <div class="kpis" style="grid-template-columns: repeat(2, 1fr); gap:14px">
-            <div class="kpi"><div class="num" data-count="294">294</div><div class="label">kg/άτομο σπατάλης/έτος</div></div>
-            <div class="kpi"><div class="num" data-count="48000">48000</div><div class="label">τόνοι/έτος από νοικοκυριά</div></div>
-            <div class="kpi"><div class="num" data-count="320">320</div><div class="label">Εθελοντές</div></div>
-            <div class="kpi"><div class="num" data-count="85">85</div><div class="label">Επιχειρήσεις-δωρητές</div></div>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <!-- FoodRescue Demo #1: κάτω από το Hero -->
-<section id="foodrescue-hero-demo">
-  <div class="container">
-    <div class="head">
-      <div>
-        <h2>Mockup App — FoodRescue</h2>
-        <p class="sub">Γρήγορη προσομοίωση σάρωσης τροφίμων (demo).</p>
-      </div>
-    </div>
-
-    <div class="foodlink-demo" data-demo="hero">
-      <h3>Σάρωση Τροφίμων</h3>
-      <p class="sub">Φόρτωσε μια φωτογραφία ή διάλεξε ένα δείγμα</p>
-
-      <form id="food-form" action="/predict" method="post" enctype="multipart/form-data">
-        <div class="file-row">
+    <section class="card" style="margin-top:18px">
+      <form id="food-form" action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
+        <div style="display:flex;gap:12px;align-items:center">
           <input type="file" name="image" accept="image/*" required />
-          <button class="btn-scan" type="submit">Σάρωση (δοκιμή)</button>
+          <div>
+            <label>Τρόπος βάρους:
+              <select name="weight_mode">
+                <option value="manual" selected>Manual</option>
+                <option value="auto">Auto</option>
+              </select>
+            </label>
+            <br/>
+            <label>Βάρος (π.χ. 70 ή 70 kg):<br/>
+              <input type="text" name="weight" value="70" />
+            </label>
+          </div>
+          <button class="btn" type="submit">Σάρωση (δοκιμή)</button>
         </div>
       </form>
 
       <hr/>
 
       <div class="stats">
-        <h4>Στατιστικά (προσομοίωση)</h4>
-        <p class="stats-text" id="prediction-result">
+        <h3>Αποτέλεσμα</h3>
+        <p id="prediction-result">
           {% if prediction %}
-            Πρόβλεψη: {{ prediction }}
+            {{ prediction }}
           {% else %}
             Ανέβασε εικόνα για πρόβλεψη
           {% endif %}
         </p>
-      </div>
-    </div>
-  </div>
-</section>
 
+        {% if image_url %}
+          <div>
+            <h4>Επεξεργασμένη εικόνα (θολωμένα πρόσωπα)</h4>
+            <img src="{{ image_url }}" alt="processed" style="max-width:300px;border-radius:10px;border:1px solid #eee"/>
+          </div>
+        {% endif %}
+      </div>
+    </section>
     <!-- MISSION -->
     <section id="mission">
       <div class="container">
@@ -624,5 +595,13 @@
       });
     });
   </script>
+</body>
+</html>
+
+    <hr/>
+    <footer style="margin-top:24px;color:#6b7280">
+      <small>Demo — MobileNetV2 (ImageNet). Για παραγωγή: βελτιστοποίηση μοντέλου & WSGI server.</small>
+    </footer>
+  </div>
 </body>
 </html>
