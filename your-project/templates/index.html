@@ -1,0 +1,607 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ZERO WASTE Κύπρος | FoodRescue Demo</title>
+  <meta name="description" content="ZERO WASTE Κύπρος – demo εφαρμογή σάρωσης τροφίμων" />
+  <style>
+    :root{
+      --bg:#ffffff;         /* white */
+      --panel:#f7faf7;      /* light panel */
+      --text:#0f172a;       /* slate-900 */
+      --muted:#475569;      /* slate-600 */
+      --brand:#d57a00;      /* copper/orange (Cyprus flag) */
+      --brand-2:#6c8e3d;    /* olive green (Cyprus olive branches) */
+      --accent:#6c8e3d;     /* green links */
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --radius: 18px;
+      --gap: clamp(18px, 2.5vw, 28px);
+      --w: min(1200px, 92vw);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, #ffffff 0%, #fbf9f4 100%);
+      color:var(--text);
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .container{width:var(--w); margin-inline:auto}
+    header{
+      position:sticky; top:0; z-index:999;
+      background: rgba(255,255,255,.85); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(2,6,23,.08);
+    }
+    .nav{display:flex; align-items:center; justify-content:space-between; gap:var(--gap); padding:14px 0}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.2px}
+    .brand svg{width:34px; height:34px}
+    .nav ul{display:flex; gap:20px; list-style:none; padding:0; margin:0}
+    .nav a{color:var(--text); opacity:.9}
+    .cta{display:flex; gap:10px}
+    .btn{
+      --bgc: var(--brand);
+      appearance:none; border:none; border-radius: 999px; padding:10px 16px; font-weight:700;
+      color:#fff; background:var(--bgc); cursor:pointer; box-shadow: var(--shadow);
+    }
+    .btn.secondary{ --bgc: var(--brand-2); color:#fff; box-shadow:none; border:1px solid rgba(2,6,23,.06)}
+    .btn.ghost{ --bgc: transparent; color:#fff; border:1px solid rgba(2,6,23,.12); box-shadow:none }
+    .mobile-toggle{display:none}
+
+    /* Hero */
+    .hero{padding: clamp(40px, 8vw, 120px) 0 50px}
+    .hero .wrap{display:grid; grid-template-columns: 1.2fr .8fr; gap:var(--gap); align-items:center}
+    .eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:.9rem; color:#0b4e2b; background: rgba(108,142,61,.12); padding:6px 10px; border-radius:999px}
+    h1{font-size: clamp(30px, 6vw, 56px); line-height:1.1; margin:12px 0 12px}
+    .lead{font-size: clamp(16px, 2.2vw, 20px); color:#334155; margin: 0 0 22px}
+    .hero-card{background: linear-gradient(180deg, rgba(213,122,0,.08), rgba(108,142,61,.06)); border:1px solid rgba(2,6,23,.08); border-radius: var(--radius); padding:22px; box-shadow: var(--shadow)}
+    .tag-list{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px}
+    .tag{font-size:.85rem; color:#334155; background: rgba(2,6,23,.04); border:1px solid rgba(2,6,23,.08); padding:6px 10px; border-radius:999px}
+
+    /* Sections */
+    section{padding:70px 0}
+    section .head{display:flex; align-items:end; justify-content:space-between; gap:var(--gap); margin-bottom:26px}
+    section h2{font-size: clamp(22px, 4vw, 34px); margin:0}
+    section p.sub{color:#334155; margin:6px 0 0}
+
+    /* Cards & KPIs */
+    .cards{display:grid; grid-template-columns: repeat(3, 1fr); gap:var(--gap)}
+    .card{background: var(--panel); border:1px solid rgba(2,6,23,.08); border-radius: var(--radius); padding:22px; box-shadow: var(--shadow)}
+    .card h3{margin:0 0 8px}
+    .kpis{display:grid; grid-template-columns: repeat(4, 1fr); gap:var(--gap)}
+    .kpi{background: linear-gradient(180deg, rgba(108,142,61,.12), rgba(213,122,0,.08)); border:1px solid rgba(108,142,61,.25); border-radius: var(--radius); padding:22px; text-align:center}
+    .kpi .num{font-size: clamp(26px, 4.5vw, 42px); font-weight:800}
+    .kpi .label{color:#334155}
+
+    /* Program grid */
+    .grid-3{display:grid; grid-template-columns: repeat(3, 1fr); gap:var(--gap)}
+    .program .icon{width:40px; height:40px; border-radius:12px; display:grid; place-items:center; background:rgba(213,122,0,.15); border:1px solid rgba(213,122,0,.3); margin-bottom:8px}
+
+    /* Timeline */
+    .timeline{border-left:2px dashed rgba(2,6,23,.15); margin-left:12px; padding-left:20px}
+    .tl-item{margin:18px 0; position:relative}
+    .tl-item::before{content:""; position:absolute; left:-31px; top:6px; width:14px; height:14px; border-radius:50%; background:var(--brand-2); box-shadow:0 0 0 6px rgba(108,142,61,.15)}
+
+    /* Team */
+    .team{display:grid; grid-template-columns: repeat(4, 1fr); gap:var(--gap)}
+    .member{background: var(--panel); border:1px solid rgba(2,6,23,.08); border-radius: var(--radius); padding:16px; text-align:center}
+    .avatar{width:88px; height:88px; border-radius:50%; background:linear-gradient(180deg, rgba(213,122,0,.25), rgba(108,142,61,.2)); display:inline-grid; place-items:center; font-weight:700; margin:6px auto 10px}
+    .role{color:#475569; font-size:.95rem}
+
+    /* Logos */
+    .logos{display:grid; grid-template-columns: repeat(6, 1fr); gap:18px}
+    .logo{height:44px; background:rgba(2,6,23,.04); border:1px solid rgba(2,6,23,.08); border-radius:12px}
+
+    /* CTA block */
+    .cta-block{display:grid; grid-template-columns: 1.2fr .8fr; gap:var(--gap); background: linear-gradient(90deg, rgba(213,122,0,.08), rgba(108,142,61,.08)); border:1px solid rgba(2,6,23,.08); border-radius: var(--radius); padding:26px; align-items:center}
+
+    /* FAQ */
+    details{background: var(--panel); border:1px solid rgba(2,6,23,.08); border-radius: var(--radius); padding:14px 18px}
+    summary{cursor:pointer; font-weight:700}
+    details + details{margin-top:12px}
+
+    /* Footer */
+    footer{margin-top:60px; border-top:1px solid rgba(2,6,23,.08); padding:30px 0 60px; color:#334155}
+    .foot{display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:var(--gap)}
+    .copyright{margin-top:10px; font-size:.9rem; color:#64748b}
+
+    /* FoodRescue mockup (light, reusable) */
+    .foodlink-demo{background:var(--panel); border:1px solid rgba(2,6,23,.08); border-radius:var(--radius); box-shadow:var(--shadow); padding:24px}
+    .foodlink-demo h3{margin:0 0 10px}
+    .foodlink-demo .sub{color:var(--muted); margin:0 0 14px}
+    .foodlink-demo .file-row{display:flex; gap:10px; align-items:center; margin-bottom:10px}
+    .foodlink-demo input[type="file"]{flex:1; border:1px solid rgba(2,6,23,.12); border-radius:10px; padding:8px; background:#fff}
+    .foodlink-demo .btn-scan{--bgc: var(--brand); color:#fff; border:none; border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; box-shadow:var(--shadow)}
+    .foodlink-demo .stats h4{margin:10px 0 6px; font-size:16px}
+    .foodlink-demo .stats p{margin:0; color:var(--muted)}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero .wrap, .cta-block{grid-template-columns: 1fr}
+      .cards{grid-template-columns: 1fr 1fr}
+      .kpis{grid-template-columns: 1fr 1fr}
+      .grid-3{grid-template-columns: 1fr 1fr}
+      .team{grid-template-columns: 1fr 1fr}
+      .logos{grid-template-columns: 1fr 1fr 1fr}
+      .foot{grid-template-columns: 1fr 1fr}
+    }
+    @media (max-width: 640px){
+      .cards, .grid-3, .team{grid-template-columns: 1fr}
+      .kpis{grid-template-columns: 1fr}
+      .logos{grid-template-columns: 1fr 1fr}
+      .nav ul{display:none}
+      .mobile-toggle{display:inline-flex}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#">
+        <!-- Cyprus-themed leaf logo -->
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M20.5 3.5C12 3 4 9 4 16.5c0 2.8 2.2 4 4.5 4 6.5 0 10.5-9 12-17.5Z" fill="url(#g)"/>
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d57a00"/><stop offset="1" stop-color="#6c8e3d"/></linearGradient></defs>
+        </svg>
+        ZERO WASTE Κύπρος
+      </a>
+      <nav>
+        <button class="btn ghost mobile-toggle" aria-expanded="false" aria-controls="mnav" onclick="toggleMenu()">Μενού</button>
+        <ul id="mnav">
+          <li><a href="#mission">Αποστολή</a></li>
+          <li><a href="#cyprus-stats">Στατιστικά</a></li>
+          <li><a href="#programs">Προγράμματα</a></li>
+          <li><a href="#sdg2">Στόχος 2</a></li>
+          <li><a href="#team">Ομάδα</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
+      <div class="cta">
+        <a class="btn secondary" href="#volunteer">Γίνε Εθελοντής</a>
+        <a class="btn" href="#donate">Στήριξε μας</a>
+      </div>
+    </div>
+  </header>
+
+    <section class="card" style="margin-top:18px">
+      <form id="food-form" action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
+        <div style="display:flex;gap:12px;align-items:center">
+          <input type="file" name="image" accept="image/*" required />
+          <div>
+            <label>Τρόπος βάρους:
+              <select name="weight_mode">
+                <option value="manual" selected>Manual</option>
+                <option value="auto">Auto</option>
+              </select>
+            </label>
+            <br/>
+            <label>Βάρος (π.χ. 70 ή 70 kg):<br/>
+              <input type="text" name="weight" value="70" />
+            </label>
+          </div>
+          <button class="btn" type="submit">Σάρωση (δοκιμή)</button>
+        </div>
+      </form>
+
+      <hr/>
+
+      <div class="stats">
+        <h3>Αποτέλεσμα</h3>
+        <p id="prediction-result">
+          {% if prediction %}
+            {{ prediction }}
+          {% else %}
+            Ανέβασε εικόνα για πρόβλεψη
+          {% endif %}
+        </p>
+
+        {% if image_url %}
+          <div>
+            <h4>Επεξεργασμένη εικόνα (θολωμένα πρόσωπα)</h4>
+            <img src="{{ image_url }}" alt="processed" style="max-width:300px;border-radius:10px;border:1px solid #eee"/>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+    <!-- MISSION -->
+    <section id="mission">
+      <div class="container">
+        <div class="head">
+          <div>
+            <h2>Η Αποστολή μας</h2>
+            <p class="sub">Να σταματήσουμε τη σπατάλη τροφίμων και να εξαλείψουμε την πείνα, με σεβασμό στον άνθρωπο και τον πλανήτη.</p>
+          </div>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>Διάσωση &amp; διανομή</h3>
+            <p>Συλλέγουμε ασφαλή πλεονάζοντα τρόφιμα από εστίαση &amp; λιανική και τα διανέμουμε άμεσα μέσω κοινωνικών παντοπωλείων και φορέων σε όλη την Κύπρο.</p>
+          </article>
+          <article class="card">
+            <h3>Εκπαίδευση</h3>
+            <p>Προγράμματα για σχολεία, επιχειρήσεις και νοικοκυριά: σωστή αποθήκευση, μαγείρεμα χωρίς σπατάλη, κατανόηση ημερομηνιών λήξης.</p>
+          </article>
+          <article class="card">
+            <h3>Υποστήριξη πολιτικής</h3>
+            <p>Κατευθυντήριες γραμμές και κίνητρα για δωρεές τροφίμων και μείωση οργανικών αποβλήτων.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMPACT -->
+    <section id="impact">
+      <div class="container">
+        <div class="head">
+          <div>
+            <h2>Το Αποτύπωμά μας</h2>
+            <p class="sub">Μετράμε ό,τι έχει σημασία για τους ανθρώπους και το κλίμα.</p>
+          </div>
+        </div>
+        <div class="kpis" aria-label="Μετρητικά αντίκτυπου">
+          <div class="kpi"><div class="num" data-count="125000">125000</div><div class="label">Μερίδες φαγητού διασωθείσες</div></div>
+          <div class="kpi"><div class="num" data-count="85">85</div><div class="label">Επιχειρήσεις-δωρητές</div></div>
+          <div class="kpi"><div class="num" data-count="37">37</div><div class="label">Δήμοι/Κοινότητες</div></div>
+          <div class="kpi"><div class="num" data-count="21000">21000</div><div class="label">Τόνοι CO₂e που αποφύγαμε</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CYPRUS STATS -->
+    <section id="cyprus-stats">
+      <div class="container">
+        <div class="head">
+          <div>
+            <h2>Κύπρος: Τι γνωρίζουμε για τη σπατάλη τροφίμων</h2>
+            <p class="sub">Στοιχεία που καθοδηγούν τις δράσεις μας.</p>
+          </div>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>~294 kg/κάτοικο/έτος</h3>
+            <p>Από τις υψηλότερες τιμές σπατάλης τροφίμων ανά κάτοικο στην ΕΕ.</p>
+          </article>
+          <article class="card">
+            <h3>~48.000 τόνοι/έτος</h3>
+            <p>Εκτιμώμενη ποσότητα απορριπτόμενων τροφίμων από νοικοκυριά παγκύπρια.</p>
+          </article>
+          <article class="card">
+            <h3>Στόχος: μείωση 50%</h3>
+            <p>Ευθυγράμμιση με ευρωπαϊκές κατευθύνσεις για μείωση της σπατάλης έως το 2030.</p>
+          </article>
+        </div>
+        <div style="margin-top:16px">
+          <img src="https://media.istockphoto.com/id/1218623873/photo/donation-box-with-food-on-old-wooden-background.jpg?s=612x612&w=0&k=20&c=h0Q3HODN-EI_27CPM2w8XE8FCuJ48UbLZNKowDJtisE=" alt="Σπατάλη τροφίμων στην Κύπρο" style="width:100%; border-radius:14px"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRAMS -->
+    <section id="programs">
+      <div class="container">
+        <div class="head">
+          <div>
+            <h2>Προγράμματα &amp; Δράσεις</h2>
+            <p class="sub">Κλιμακώνονται παγκύπρια με τοπικές συνεργασίες σε Λευκωσία, Λεμεσό, Λάρνακα, Πάφο και Αμμόχωστο.</p>
+          </div>
+          <a class="btn ghost" href="#">Δες όλα</a>
+        </div>
+        <div class="grid-3">
+          <article class="card program">
+            <img src="https://i.postimg.cc/rp7CYWpL/1.jpg" alt="Διανομή τροφίμων" style="width:100%; border-radius:12px; margin-bottom:8px"/>
+            <div class="icon" aria-hidden="true">🥗</div>
+            <h3>Rescue Routes</h3>
+            <p>Καθημερινές διαδρομές συλλογής από αρτοποιεία, ξενοδοχεία και αγορές για άμεση διανομή σε φορείς.</p>
+            <a href="#" aria-label="Μάθε περισσότερα για Rescue Routes">Μάθε περισσότερα →</a>
+          </article>
+          <article class="card program">
+            <img src="https://i.postimg.cc/wj6NW25S/image.jpg" alt="Εκπαίδευση για λιγότερη σπατάλη" style="width:100%; border-radius:12px; margin-bottom:8px"/>
+            <div class="icon" aria-hidden="true">👩‍🍳</div>
+            <h3>Cook Smart</h3>
+            <p>Εργαστήρια μαγειρικής χωρίς σπατάλη για σχολεία &amp; κοινότητες με τοπικούς σεφ και διατροφολόγους.</p>
+            <a href="#">Μάθε περισσότερα →</a>
+          </article>
+          <article class="card program">
+            <img src="https://i.postimg.cc/YC6HSNJS/12.jpg" alt="FoodLink CY App" style="width:100%; border-radius:12px; margin-bottom:8px"/>
+            <div class="icon" aria-hidden="true">📱</div>
+            <h3>FoodLink CY – η εφαρμογή μας</h3>
+            <p>Συνδέει δωρητές τροφίμων με κοινωνικούς φορείς της Κύπρου. Live ειδοποιήσεις, αντιστοίχιση σε πραγματικό χρόνο, ιχνηλασιμότητα και στατιστικά ανά επαρχία.</p>
+            <a href="#">Μάθε περισσότερα →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section id="timeline">
+      <div class="container">
+        <div class="head">
+          <h2>Η Πορεία μας</h2>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <h3>2025 – Ίδρυση</h3>
+            <p>Εργαστήριο Καινοτομίας.</p>
+          </div>
+          <div class="tl-item">
+            <h3>2025 – Πρώτες συνεργασίες</h3>
+            <p>Ολοήμερο/Μουσικό Παγκυπρίου Γυμνασίου.</p>
+          </div>
+          <div class="tl-item">
+            <h3>2025 – Μελλοντικοί Στόχοι</h3>
+            <p>Συνεργασία με Ετεριές Delivery.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SDG 2 -->
+    <section id="sdg2">
+      <div class="container">
+        <div class="head">
+          <h2>Στόχος 2 (ΟΗΕ): Μηδενική Πείνα</h2>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <h3>Ο Στόχος</h3>
+            <p>Τερματισμός της πείνας, επίτευξη επισιτιστικής ασφάλειας &amp; βελτιωμένης διατροφής και προώθηση βιώσιμης γεωργίας.</p>
+          </div>
+          <div class="card">
+            <h3>Τι σημαίνει για την Κύπρο</h3>
+            <p>Διάσωση ασφαλών πλεονασμάτων, ενίσχυση δικτύων διανομής, ψηφιακή αντιστοίχιση δωρητών–φορέων, εκπαίδευση πολιτών &amp; επιχειρήσεων.</p>
+          </div>
+          <div class="card">
+            <h3>Πώς συμβάλλουμε</h3>
+            <p>Rescue Routes καθημερινά, FoodLink CY app για real-time αντιστοίχιση, εκπαιδευτικά προγράμματα σε σχολεία και κοινότητες.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="team">
+      <div class="container">
+        <div class="head">
+          <div>
+            <h2>Γνώρισε την Ομάδα</h2>
+            <p class="sub">Έμπειροι επαγγελματίες και αφοσιωμένοι εθελοντές.</p>
+          </div>
+          <a class="btn ghost" href="#volunteer">Γίνε μέλος</a>
+        </div>
+        <div class="team">
+          <div class="member">
+            <div class="avatar" aria-hidden="true">ΗΓ</div>
+            <strong>Η. Γεωργίου</strong>
+            <div class="role">Web Developer</div>
+          </div>
+          <div class="member">
+            <div class="avatar" aria-hidden="true">ΜΧ</div>
+            <strong>Μ. Χριστοφή</strong>
+            <div class="role">Ανάλυση Δεδομένων</div>
+          </div>
+          <div class="member">
+            <div class="avatar" aria-hidden="true">ΣΠ</div>
+            <strong>Σ. Παπουή</strong>
+            <div class="role">Designer</div>
+          </div>
+          <div class="member">
+            <div class="avatar" aria-hidden="true">ΝΦ</div>
+            <strong>Ν. Φεοντόροβα</strong>
+            <div class="role">Ανάλυση Δεδομένων</div>
+          </div>
+          <div class="member">
+            <div class="avatar" aria-hidden="true">ΒΠ</div>
+            <strong>Β. Παπαδοπούλου</strong>
+            <div class="role">Designer</div>
+          </div>
+          <div class="member">
+            <div class="avatar" aria-hidden="true">ΜΠ</div>
+            <strong>Μ. Πιτταρά</strong>
+            <div class="role">Μέντορας</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VOLUNTEER CTA -->
+    <section id="volunteer">
+      <div class="container">
+        <div class="cta-block">
+          <div>
+            <h2>Γίνε Εθελοντής</h2>
+            <p>Κάνε δικές σου τις διασώσεις τροφίμων, υποστήριξε δράσεις, γίνε πρεσβευτής στην κοινότητά σου.</p>
+          </div>
+          <form class="card" onsubmit="event.preventDefault(); alert('Ευχαριστούμε! Θα επικοινωνήσουμε σύντομα.');">
+            <label>Ονοματεπώνυμο<br/><input required type="text" placeholder="π.χ. Άννα Χαραλάμπους" style="width:100%"></label>
+            <br/>
+            <label>Email<br/><input required type="email" placeholder="you@example.com" style="width:100%"></label>
+            <br/>
+            <label>Πόλη<br/>
+              <select style="width:100%">
+                <option>Λευκωσία</option>
+                <option>Λεμεσός</option>
+                <option>Λάρνακα</option>
+                <option>Πάφος</option>
+                <option>Αμμόχωστος</option>
+              </select>
+            </label>
+            <br/>
+            <button class="btn" type="submit">Δήλωσε ενδιαφέρον</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="volunteer">
+      <div class="container">
+        <div class="cta-block">
+          <div>
+            <h2>Αίτηση Σίτιση</h2>
+            <p></p>
+          </div>
+          <form class="card" onsubmit="event.preventDefault(); alert('Ευχαριστούμε! Θα επικοινωνήσουμε σύντομα.');">
+            <label>Ονοματεπώνυμο<br/><input required type="text" placeholder="π.χ. Άννα Χαραλάμπους" style="width:100%"></label>
+            <br/>
+            <label>Email<br/><input required type="email" placeholder="you@example.com" style="width:100%"></label>
+            <br/>
+            <label>Πόλη<br/>
+              <select style="width:100%">
+                <option>Λευκωσία</option>
+                <option>Λεμεσός</option>
+                <option>Λάρνακα</option>
+                <option>Πάφος</option>
+                <option>Αμμόχωστος</option>
+              </select>
+            </label>
+            <br/>
+            <button class="btn" type="submit">Δήλωσε ενδιαφέρον</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- DONATE CTA -->
+    <section id="donate">
+      <div class="container">
+        <div class="cta-block">
+          <div>
+            <h2>Στήριξε την αποστολή</h2>
+            <p>Κάθε 1€ ισοδυναμεί με 2–3 μερίδες που δεν πάνε χαμένες. Διάλεξε τον τρόπο που σε εξυπηρετεί.</p>
+            <ul>
+              <li>Μηνιαία δωρεά</li>
+              <li>Εφάπαξ συνεισφορά</li>
+              <li>Χορηγία από επιχείρηση</li>
+            </ul>
+          </div>
+          <div class="card">
+            <label>Ποσό (EUR)<br/><input type="number" value="20" min="1" style="width:100%"></label>
+            <br/>
+            <button class="btn" onclick="alert('Μετάβαση σε ασφαλή πληρωμή (demo)')">Συνέχεια σε πληρωμή</button>
+            <p style="color:#334155; font-size:.9rem; margin-top:8px">* Εικονική ροή πληρωμής για σκοπούς επίδειξης.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="container">
+        <div class="head">
+          <h2>Συχνές Ερωτήσεις</h2>
+        </div>
+        <details>
+          <summary>Είναι ασφαλές το φαγητό που διανέμετε;</summary>
+          <p>Ναι. Ακολουθούμε πρωτόκολλα ασφάλειας τροφίμων και συνεργαζόμαστε με επαγγελματίες υγείας &amp; ελέγχου ποιότητας.</p>
+        </details>
+        <details>
+          <summary>Πώς μπορώ να γίνω δωρητής τροφίμων;</summary>
+          <p>Επικοινώνησε μαζί μας για αξιολόγηση ροών σου. Παρέχουμε καθαρούς κάδους, εκπαίδευση προσωπικού και πρόγραμμα συλλογής.</p>
+        </details>
+        <details>
+          <summary>Παρέχετε αποδείξεις για φορολογικούς σκοπούς;</summary>
+          <p>Ναι, για δωρεές χρηματικές ή σε είδος εκδίδεται σχετική απόδειξη.</p>
+        </details>
+      </div>
+    </section>
+
+
+
+  <footer>
+    <div class="container">
+      <div class="foot">
+        <div>
+          <div class="brand" aria-label="Λογότυπο ZERO WASTE">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M20.5 3.5C12 3 4 9 4 16.5c0 2.8 2.2 4 4.5 4 6.5 0 10.5-9 12-17.5Z" fill="url(#g2)"/>
+              <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d57a00"/><stop offset="1" stop-color="#6c8e3d"/></linearGradient></defs>
+            </svg>
+            ZERO WASTE Κύπρος
+          </div>
+          <p class="copyright">© <span id=""></span>eliasgeorgiou</p>
+        </div>
+        <div>
+          <strong>Πλοήγηση</strong>
+          <ul>
+            <li><a href="#mission">Αποστολή</a></li>
+            <li><a href="#cyprus-stats">Στατιστικά</a></li>
+            <li><a href="#programs">Προγράμματα</a></li>
+            <li><a href="#sdg2">Στόχος 2</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <strong>Επικοινωνία</strong>
+          <ul>
+            <li>lyk-pagkyprion-lef@schools.ac.cy</li>
+            <li>+357 22 466711</li>
+            <li>ΠΑΓΚΥΠΡΙΟΝ ΓΥΜΝΑΣΙΟΝ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu(){
+      const ul = document.getElementById('mnav');
+      const btn = document.querySelector('.mobile-toggle');
+      const open = ul.style.display === 'block';
+      ul.style.display = open ? 'none' : 'block';
+      btn.setAttribute('aria-expanded', String(!open));
+    }
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Counter animation
+    const counters = document.querySelectorAll('.num');
+    const obs = new IntersectionObserver((entries)=>{
+      entries.forEach((e)=>{
+        if(e.isIntersecting){
+          const el = e.target; const to = Number(el.dataset.count||0);
+          const start = performance.now(); const dur = 1500 + Math.random()*700;
+          function step(t){
+            const p = Math.min(1, (t - start)/dur);
+            const val = Math.floor(p*to);
+            el.textContent = val.toLocaleString('el-GR');
+            if(p<1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+          obs.unobserve(el);
+        }
+      });
+    }, {threshold:.5});
+    counters.forEach(c=>obs.observe(c));
+
+    // FoodRescue demo logic (handles all three sections)
+    document.querySelectorAll('.foodlink-demo').forEach((section)=>{
+      const fileInput = section.querySelector('input[type="file"]');
+      const button = section.querySelector('.btn-scan');
+      const statsP = section.querySelector('.stats-text');
+
+      button.addEventListener('click', ()=>{
+        if(fileInput && fileInput.files && fileInput.files.length > 0){
+          // Fake numbers for demo
+          const kg = (Math.random()*3 + 1).toFixed(1);   // 1.0–4.0 kg
+          const donations = 1;                            // single donation
+          statsP.textContent = `${kg} kg διασωσμένα — ${donations} δωρεά (demo)`;
+          alert('Η σάρωση ολοκληρώθηκε (προσομοίωση).');
+        }else{
+          alert('Διάλεξε πρώτα ένα αρχείο εικόνας.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
+    <hr/>
+    <footer style="margin-top:24px;color:#6b7280">
+      <small>Demo — MobileNetV2 (ImageNet). Για παραγωγή: βελτιστοποίηση μοντέλου & WSGI server.</small>
+    </footer>
+  </div>
+</body>
+</html>
